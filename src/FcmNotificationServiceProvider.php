@@ -1,6 +1,6 @@
 <?php
 
-namespace Amassi\FcmNotification;
+namespace AliAmassi\FcmNotification;
 
 use Illuminate\Support\ServiceProvider;
 
