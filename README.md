@@ -36,7 +36,7 @@ A simple and elegant Laravel package to send Firebase Cloud Messaging (FCM) push
 
 #### For Production
 ```bash
-composer require aliamassi/fcm-notification
+composer require aliamassi/fcm-notification:dev-main --dev
 ```
 
 #### For Local Development
