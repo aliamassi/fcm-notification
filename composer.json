@@ -1,0 +1,24 @@
+{
+    "name": "aliamassi/fcm-notification",
+    "description": "Laravel package to send Firebase Cloud Messaging notifications to Android and iOS.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Amassi\\FcmNotification\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AliAmassi\\FcmNotification\\FcmNotificationServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
