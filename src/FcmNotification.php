@@ -7,8 +7,7 @@ use GuzzleHttp\Client;
 class FcmNotification
 {
     protected string $serverKey;
-    protected string $fcmUrl = 'https://fcm.googleapis.com/fcm/send
-';
+    protected string $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
     public function __construct(string $serverKey)
     {
         $this->serverKey = $serverKey;
