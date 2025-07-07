@@ -28,10 +28,10 @@ class FcmNotification
         } else {
             $payload['to'] = $deviceTokens;
         }
-        $response = $client->post($this->fcmUrl, [
+        $response = $client->post(trim($this->fcmUrl), [
             'headers' => [
                 'Authorization' => 'key=' . $this->serverKey,
-                'Content-Type'  => 'application/json',
+                'Content-Type' => 'application/json',
             ],
             'json' => $payload
         ]);
