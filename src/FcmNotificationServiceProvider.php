@@ -11,7 +11,7 @@ class FcmNotificationServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/config/fcm.php', 'fcm');
 
         $this->app->singleton(FcmNotification::class, function ($app) {
-            return new FcmNotification(config('fcm.server_key'),config('fcm.project_id'));
+            return new FcmNotification(config('fcm.server_key'));
         });
     }
 

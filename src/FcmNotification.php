@@ -7,11 +7,11 @@ use GuzzleHttp\Client;
 class FcmNotification
 {
     protected string $serverKey;
-    protected string $projectId;
-    public function __construct(string $serverKey,string $projectId)
+    protected string $fcmUrl = 'https://fcm.googleapis.com/fcm/send
+';
+    public function __construct(string $serverKey)
     {
         $this->serverKey = $serverKey;
-        $this->projectId = $projectId;
     }
 
     public function send($deviceTokens, array $notification = [], array $data = []): array
@@ -29,8 +29,7 @@ class FcmNotification
         } else {
             $payload['to'] = $deviceTokens;
         }
-        $fcmUrl = 'https://fcm.googleapis.com/v1/projects/'.$this->projectId.'/messages:send';
-        $response = $client->post($fcmUrl, [
+        $response = $client->post($this->fcmUrl, [
             'headers' => [
                 'Authorization' => 'key=' . $this->serverKey,
                 'Content-Type'  => 'application/json',
