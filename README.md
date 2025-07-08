@@ -7,7 +7,6 @@
 
 A simple and elegant Laravel package to send Firebase Cloud Messaging (FCM) push notifications to Android and iOS devices.
 
-**FCM Endpoint:** `https://fcm.googleapis.com/fcm/send`
 
 ---
 
@@ -61,21 +60,22 @@ composer require aliamassi/fcm-notification:dev-main
 ### Step 2: Publish Configuration
 
 ```bash
-php artisan vendor:publish --tag=config --provider="AliAmassi\\FcmNotification\\FcmNotificationServiceProvider"
+php artisan vendor:publish --tag=config --provider="AliAmassi\FcmNotification\FirebaseNotificationServiceProvider"
 ```
 
 ### Step 3: Environment Setup
 
 Add to your `.env` file:
 ```env
-FCM_SERVER_KEY=your_firebase_server_key_here
+FIREBASE_PROJECT_ID=your_firebase_project_id_here
+FIREBASE_CREDENTIALS=your_firebase_file_here[path to -->firebase-service-account.json]
 ```
 
 ---
 
 ## ⚙️ Configuration
 
-The published config file (`config/fcm.php`):
+The published config file (`config/firebase.php`):
 
 ```php
 <?php
@@ -90,17 +90,11 @@ return [
     | Project Settings > Cloud Messaging > Server Key
     |
     */
-    'server_key' => env('FCM_SERVER_KEY'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | FCM Endpoint
-    |--------------------------------------------------------------------------
-    |
-    | The FCM HTTP v1 API endpoint
-    |
-    */
-    'endpoint' => env('FCM_ENDPOINT', 'https://fcm.googleapis.com/fcm/send'),
+     // Path to service account JSON
+    'credentials' => env('FIREBASE_CREDENTIALS', storage_path('app/firebase-service-account.json')),
+    
+     // Your Firebase project ID
+    'project_id' => env('FIREBASE_PROJECT_ID'),
 
     /*
     |--------------------------------------------------------------------------
@@ -123,80 +117,23 @@ return [
 ```php
 <?php
 
-use AliAmassi\FcmNotification\FirebaseClient;
+use AliAmassi\FcmNotification\Facades\FirebaseNotification;
 
-class NotificationController extends Controller
-{
-    public function sendNotification(FirebaseClient $fcm)
-    {
-        // Device tokens (single or multiple)
-        $tokens = [
-            'device_token_1',
-            'device_token_2'
-        ];
+// single device
+    FcmNotification::sendToToken(
+      $oneToken,
+      ['title'=>'Hi','body'=>'Hello!'],
+      ['foo'=>'bar']
+    );
 
-        // Notification payload
-        $notification = [
-            'title' => 'Hello World!',
-            'body'  => 'You have a new message.',
-            'sound' => 'default'
-        ];
-
-        // Custom data (optional)
-        $data = [
-            'user_id' => 123,
-            'action'  => 'open_chat'
-        ];
-
-        try {
-            $response = $fcm->send($tokens, $notification, $data);
-            
-            return response()->json([
-                'success' => true,
-                'response' => $response
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-}
+// multicast
+    FcmNotification::sendToTokens(
+      $arrayOfTokens,
+      ['title'=>'Group!','body'=>'Hey everyone'],
+      ['extra'=>'data']
+    );
 ```
 
-### Advanced Usage
-
-#### Single Device Token
-```php
-$token = 'single_device_token';
-$response = $fcm->send($token, $notification, $data);
-```
-
-#### Rich Notifications
-```php
-$notification = [
-    'title' => 'New Order',
-    'body'  => 'You have received a new order #12345',
-    'sound' => 'default',
-    'icon'  => 'notification_icon',
-    'color' => '#FF6B35',
-    'click_action' => 'OPEN_ORDER_ACTIVITY'
-];
-```
-
-#### Custom Options
-```php
-$options = [
-    'priority' => 'high',
-    'time_to_live' => 3600,
-    'collapse_key' => 'order_updates'
-];
-
-$response = $fcm->send($tokens, $notification, $data, $options);
-```
-
----
 
 ## 🧪 Testing
 
