@@ -1,5 +1,5 @@
 <?php
-namespace AliAmassi\FcmNotification\FirebaseNotification\Facades;
+namespace AliAmassi\FcmNotification\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
