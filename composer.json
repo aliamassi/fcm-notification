@@ -9,14 +9,19 @@
         }
     },
     "require": {
-        "php": "^8.0",
+        "php": ">=7.4",
+        "illuminate/support": "^8.0|^9.0|^10.0",
+        "google/auth": "^1.20",
         "guzzlehttp/guzzle": "^7.0"
     },
     "extra": {
         "laravel": {
             "providers": [
-                "AliAmassi\\FcmNotification\\FcmNotificationServiceProvider"
-            ]
+                "AliAmassi\\FcmNotification\\FirebaseNotificationServiceProvider"
+            ],
+            "aliases": {
+                "FirebaseNotification": "AliAmassi\\FcmNotification\\Facades\\FirebaseNotification"
+            }
         }
     },
     "minimum-stability": "dev",

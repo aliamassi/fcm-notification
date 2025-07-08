@@ -123,11 +123,11 @@ return [
 ```php
 <?php
 
-use AliAmassi\FcmNotification\FcmNotification;
+use AliAmassi\FcmNotification\FirebaseClient;
 
 class NotificationController extends Controller
 {
-    public function sendNotification(FcmNotification $fcm)
+    public function sendNotification(FirebaseClient $fcm)
     {
         // Device tokens (single or multiple)
         $tokens = [
