@@ -9,7 +9,7 @@ class FirebaseNotificationServiceProvider extends ServiceProvider
     public function register()
     {
         // Merge config
-        $this->mergeConfigFrom(__DIR__.'/../config/firebase.php', 'firebase');
+        $this->mergeConfigFrom(__DIR__.'/config/firebase.php', 'firebase');
 
         // Bind client
         $this->app->singleton(FirebaseClient::class, function($app) {
@@ -27,7 +27,7 @@ class FirebaseNotificationServiceProvider extends ServiceProvider
     {
         // Publish config
         $this->publishes([
-            __DIR__.'/../config/firebase.php' => config_path('firebase.php'),
+            __DIR__.'/config/firebase.php' => config_path('firebase.php'),
         ], 'config');
     }
 }
