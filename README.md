@@ -1,362 +1,90 @@
 # Laravel FCM Notification
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/aliamassi/fcm-notification.svg)](https://packagist.org/packages/aliamassi/fcm-notification)
-[![Total Downloads](https://img.shields.io/packagist/dt/aliamassi/fcm-notification.svg)](https://packagist.org/packages/aliamassi/fcm-notification)
-[![License](https://img.shields.io/packagist/l/aliamassi/fcm-notification.svg)](https://packagist.org/packages/aliamassi/fcm-notification)
-[![PHP Version Require](https://img.shields.io/packagist/php-v/aliamassi/fcm-notification.svg)](https://packagist.org/packages/aliamassi/fcm-notification)
+![Packagist Version](https://img.shields.io/packagist/v/aliamassi/fcm-notification)
+![License](https://img.shields.io/packagist/l/aliamassi/fcm-notification)
+![Downloads](https://img.shields.io/packagist/dt/aliamassi/fcm-notification)
 
-A simple and elegant Laravel package to send Firebase Cloud Messaging (FCM) push notifications to Android and iOS devices.
+Laravel package to send Firebase Cloud Messaging (FCM) notifications to Android and iOS devices.
 
+## Requirements
 
----
+* PHP 8.0 or higher
+* Laravel 8/9/10
+* [google/auth](https://packagist.org/packages/google/auth) ^1.20
+* [guzzlehttp/guzzle](https://packagist.org/packages/guzzlehttp/guzzle) ^7.0 fileciteturn1file3
 
-## ✨ Features
-
-- 🚀 Easy Laravel integration
-- 📱 Support for Android & iOS devices
-- 🔔 Single & batch notifications
-- 📊 Custom data payloads
-- ⚙️ Configurable settings
-- 🛡️ Built-in error handling
-
----
-
-## 📋 Requirements
-
-- PHP >= 8.0
-- Laravel >= 9.0
-- Firebase project with FCM enabled
-
----
-
-## 📦 Installation
-
-### Step 1: Install Package
-
-#### For Production
-```bash
-composer require aliamassi/fcm-notification:dev-main --dev
-```
-
-#### For Local Development
-Add to your `composer.json`:
-
-```json
-{
-    "repositories": [
-        {
-            "type": "path",
-            "url": "aliamassi/fcm-notification"
-        }
-    ]
-}
-```
-
-Then install:
-```bash
-composer require aliamassi/fcm-notification:dev-main
-```
-
-### Step 2: Publish Configuration
+## Installation
 
 ```bash
-php artisan vendor:publish --tag=config --provider="AliAmassi\FcmNotification\FirebaseNotificationServiceProvider"
+composer require aliamassi/fcm-notification
 ```
 
-### Step 3: Environment Setup
+If you want to publish the configuration file, run:
 
-Add to your `.env` file:
-```env
-FIREBASE_PROJECT_ID=your_firebase_project_id_here
-FIREBASE_CREDENTIALS=your_firebase_file_here[path to -->firebase-service-account.json]
+```bash
+php artisan vendor:publish --provider="AliAmassi\FcmNotification\FirebaseNotificationServiceProvider" --tag="config"
 ```
 
----
+## Configuration
 
-## ⚙️ Configuration
+Copy your Firebase service account JSON to `storage/app/firebase-service-account.json` or set the path in your `.env`:
 
-The published config file (`config/firebase.php`):
+```dotenv
+FIREBASE_CREDENTIALS=/full/path/to/firebase-service-account.json
+FIREBASE_PROJECT_ID=your-firebase-project-id
+```
+
+The default config values are defined in `config/firebase.php` fileciteturn1file4.
+
+## Usage
+
+Use the `FirebaseNotification` facade or inject `AliAmassi\FcmNotification\FirebaseClient`.
+
+### Sending a Single Notification
 
 ```php
-<?php
+use FirebaseNotification;
 
-return [
-    /*
-    |--------------------------------------------------------------------------
-    | FCM Server Key
-    |--------------------------------------------------------------------------
-    |
-    | Your Firebase Cloud Messaging server key from Firebase Console
-    | Project Settings > Cloud Messaging > Server Key
-    |
-    */
-     // Path to service account JSON
-    'credentials' => env('FIREBASE_CREDENTIALS', storage_path('app/firebase-service-account.json')),
-    
-     // Your Firebase project ID
-    'project_id' => env('FIREBASE_PROJECT_ID'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Request Timeout
-    |--------------------------------------------------------------------------
-    |
-    | Maximum time in seconds to wait for FCM response
-    |
-    */
-    'timeout' => env('FCM_TIMEOUT', 30),
-];
-```
-
----
-
-## 🚀 Usage
-
-### Basic Usage
-
-```php
-<?php
-
-use AliAmassi\FcmNotification\Facades\FirebaseNotification;
-
-// single device
-    FcmNotification::sendToToken(
-      $oneToken,
-      ['title'=>'Hi','body'=>'Hello!'],
-      ['foo'=>'bar']
-    );
-
-// multicast
-    FcmNotification::sendToTokens(
-      $arrayOfTokens,
-      ['title'=>'Group!','body'=>'Hey everyone'],
-      ['extra'=>'data']
-    );
-```
-
-
-## 🧪 Testing
-
-### Postman Testing
-
-**Endpoint:** `POST /api/send-notification`
-
-**Headers:**
-```
-Content-Type: application/json
-Authorization: Bearer your_api_token
-```
-
-**Request Body:**
-```json
-{
-    "device_tokens": [
-        "device_token_1",
-        "device_token_2"
+$response = FirebaseNotification::send(
+    'device-token',
+    [
+      'title' => 'Hello',
+      'body' => 'This is a test notification',
     ],
-    "notification": {
-        "title": "Test Notification",
-        "body": "This is a test notification",
-        "sound": "default"
-    },
-    "data": {
-        "test_key": "test_value",
-        "action": "test_action"
-    }
-}
+    [
+      'foo' => 'bar'
+    ]
+);
 ```
 
-### cURL Testing
-
-```bash
-curl -X POST https://your-app.com/api/send-notification \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer your_token" \
-  -d '{
-    "device_tokens": ["your_device_token"],
-    "notification": {
-      "title": "Test",
-      "body": "Hello from cURL!"
-    },
-    "data": {
-      "foo": "bar"
-    }
-  }'
-```
-
----
-
-## 📚 API Reference
-
-### Methods
-
-#### `send($tokens, $notification, $data = [], $options = [])`
-Send notification to device tokens.
-
-**Parameters:**
-- `$tokens` (string|array) - Device token(s)
-- `$notification` (array) - Notification payload
-- `$data` (array) - Custom data payload
-- `$options` (array) - FCM options
-
-**Returns:** Response array from FCM
-
-### Notification Structure
+### Sending to Multiple Devices
 
 ```php
-$notification = [
-    'title' => 'string (required)',
-    'body'  => 'string (required)',
-    'sound' => 'string (optional)',
-    'icon'  => 'string (optional)',
-    'color' => 'string (optional, #RRGGBB)',
-    'click_action' => 'string (optional)',
-    'tag'   => 'string (optional)'
-];
+$tokens = ['token1', 'token2', 'token3'];
+
+$response = FirebaseNotification::send(
+    $tokens,
+    ['title' => 'Batch Title', 'body' => 'Batch Body']
+);
 ```
 
-### Options Structure
+The client implementation handles obtaining and caching the access token via OAuth2 using your service account credentials fileciteturn1file5.
 
-```php
-$options = [
-    'priority' => 'normal|high',
-    'time_to_live' => 3600, // seconds
-    'collapse_key' => 'string',
-    'dry_run' => false // boolean
-];
-```
+## Publishing to Packagist
 
----
+1. Tag your release:
 
-## 🔧 Troubleshooting
+   ```bash
+   git tag v1.0.0
+   git push --tags
+   ```
 
-### Common Issues
+2. Submit your repository on [Packagist](https://packagist.org/packages/submit).
 
-**1. Invalid Server Key**
-- Verify `FCM_SERVER_KEY` in `.env`
-- Check Firebase Console > Project Settings > Cloud Messaging
+## Contributing
 
-**2. Invalid Device Tokens**
-- Device tokens expire regularly
-- Implement token refresh in your mobile app
+Contributions are welcome! Please submit issues and pull requests.
 
-**3. Network Issues**
-- Ensure server has internet access
-- Check firewall settings for HTTPS outbound
+## License
 
-**4. Authentication Errors**
-- Verify server key format
-- Ensure key has FCM permissions
-
-### Debug Mode
-
-Enable Laravel debugging:
-```env
-APP_DEBUG=true
-LOG_LEVEL=debug
-```
-
----
-
-## 📖 Examples
-
-### E-commerce Order Notification
-
-```php
-public function sendOrderNotification($order)
-{
-    $tokens = $order->user->device_tokens;
-    
-    $notification = [
-        'title' => 'Order Confirmed!',
-        'body'  => "Your order #{$order->id} has been confirmed",
-        'sound' => 'default',
-        'icon'  => 'order_icon'
-    ];
-    
-    $data = [
-        'order_id' => $order->id,
-        'action'   => 'view_order',
-        'amount'   => $order->total
-    ];
-    
-    return $this->fcm->send($tokens, $notification, $data);
-}
-```
-
-### Chat Message Notification
-
-```php
-public function sendChatNotification($message)
-{
-    $tokens = $message->recipient->device_tokens;
-    
-    $notification = [
-        'title' => $message->sender->name,
-        'body'  => $message->content,
-        'sound' => 'message_sound',
-        'click_action' => 'OPEN_CHAT'
-    ];
-    
-    $data = [
-        'chat_id' => $message->chat_id,
-        'sender_id' => $message->sender_id,
-        'message_id' => $message->id
-    ];
-    
-    return $this->fcm->send($tokens, $notification, $data);
-}
-```
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-### Development Setup
-
-1. Fork the repository
-2. Clone your fork: `git clone https://github.com/yourusername/laravel-fcm-notification.git`
-3. Install dependencies: `composer install`
-4. Run tests: `vendor/bin/phpunit`
-5. Create feature branch: `git checkout -b feature/amazing-feature`
-6. Commit changes: `git commit -m 'Add amazing feature'`
-7. Push to branch: `git push origin feature/amazing-feature`
-8. Submit Pull Request
-
----
-
-## 📝 Changelog
-
-### v1.0.0
-- Initial release
-- Basic FCM notification support
-- Single and batch notifications
-- Custom data payloads
-
----
-
-## 📄 License
-
-This package is open-sourced software licensed under the [MIT License](LICENSE).
-
----
-
-## 🙏 Support
-
-- 📧 **Email:** amassi.business@gmail.com
-- 🐛 **Issues:** [GitHub Issues](https://github.com/yourusername/laravel-fcm-notification/issues)
-- 📚 **Documentation:** [GitHub Wiki](https://github.com/yourusername/laravel-fcm-notification/wiki)
-
----
-
-## 🔗 Links
-
-- [Firebase Console](https://console.firebase.google.com/)
-- [FCM Documentation](https://firebase.google.com/docs/cloud-messaging)
-- [Laravel Documentation](https://laravel.com/docs)
-
----
-
-**Made with ❤️ for the Laravel community**
+MIT License. See the [LICENSE](LICENSE) file.
