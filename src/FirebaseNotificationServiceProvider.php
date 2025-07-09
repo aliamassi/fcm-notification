@@ -9,25 +9,25 @@ class FirebaseNotificationServiceProvider extends ServiceProvider
     public function register()
     {
         // Merge config
-        $this->mergeConfigFrom(__DIR__.'/config/firebase.php', 'firebase');
+        $this->mergeConfigFrom(__DIR__ . '/config/fcm.php', 'fcm');
 
         // Bind client
         $this->app->singleton(FirebaseClient::class, function($app) {
             return new FirebaseClient(
-                config('firebase.credentials'),
-                config('firebase.project_id')
+                config('fcm.credentials'),
+                config('fcm.project_id')
             );
         });
 
         // Facade alias
-        $this->app->alias(FirebaseClient::class, 'firebase.notification');
+        $this->app->alias(FirebaseClient::class, 'fcm.notification');
     }
 
     public function boot()
     {
         // Publish config
         $this->publishes([
-            __DIR__.'/config/firebase.php' => config_path('firebase.php'),
+            __DIR__ . '/config/fcm.php' => config_path('fcm.php'),
         ], 'config');
     }
 }

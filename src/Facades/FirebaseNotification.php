@@ -7,6 +7,6 @@ class FirebaseNotification extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'firebase.notification';
+        return 'fcm.notification';
     }
 }

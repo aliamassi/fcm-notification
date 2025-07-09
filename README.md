@@ -34,8 +34,7 @@ FIREBASE_CREDENTIALS=/full/path/to/firebase-service-account.json
 FIREBASE_PROJECT_ID=your-firebase-project-id
 ```
 
-The default config values are defined in `config/firebase.php` fileciteturn1file4.
-
+The default config values are defined in config/fcm.php. After publishing, you can find the file at config/fcm.php.
 ## Usage
 
 Use the `FirebaseNotification` facade or inject `AliAmassi\FcmNotification\FirebaseClient`.
