@@ -16,7 +16,7 @@ Laravel package to send Firebase Cloud Messaging (FCM) notifications to Android 
 ## Installation
 
 ```bash
-composer require aliamassi/fcm-notification
+composer require aliamassi/fcm-notification dev-main
 ```
 
 If you want to publish the configuration file, run:
